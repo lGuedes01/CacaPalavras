@@ -10,6 +10,7 @@ int main()
     achaPalavras jogo;
     jogo.continuar = true;
     dimensoes dimensao;
+    coordenadas coordenadaPalavra;
     dimensao = leDimensoes();
     jogo.mat = alocaMatriz(dimensao);
     jogo.frase = alocaVetor(dimensao);
@@ -22,10 +23,10 @@ int main()
         mostraMatriz(jogo.mat, dimensao);
         jogo.frase = alocaVetor(dimensao);
         jogo.frase = leFrase(jogo.frase, dimensao);
-        jogo.achou = procuraPalavra(jogo.mat,jogo.frase,dimensao);
+        jogo.achou = procuraPalavra(jogo.mat,jogo.frase,dimensao, &coordenadaPalavra);
         if (jogo.achou)
-            // mostraPosicao();
-            printf("ACHOU\n");
+            mostraPosicao(jogo.frase,coordenadaPalavra);
+            // printf("ACHOU\n");
         else
             printf("Nao tem essa palavra na matriz\n");
         jogo.continuar = querContinuar();
