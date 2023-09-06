@@ -26,7 +26,6 @@ int main()
         jogo.achou = procuraPalavra(jogo.mat,jogo.frase,dimensao, &coordenadaPalavra);
         if (jogo.achou)
             mostraPosicao(jogo.frase,coordenadaPalavra);
-            // printf("ACHOU\n");
         else
             printf("Nao tem essa palavra na matriz\n");
         jogo.continuar = querContinuar();

@@ -101,74 +101,144 @@ void coordenadaDaUltimaLetra(coordenadas* coordenada, int numY, int numX)
     coordenada->x1 = coordenada->x0 + numX;
 }
 
-bool procuraVertical(int col, char** mat, char* frase, dimensoes dimensao, bool result, coordenadas* coordenada)
+bool procuraHorizontal(char** mat, char* frase, dimensoes dimensao, bool result, coordenadas* coordenada)
 {
     int tamFrase = strlen(frase);
     char* fraseAux;
     fraseAux = alocaVetor(dimensao);
-    for (int i = 0; i < dimensao.l; i++)
+    for (int i = coordenada->x0, k=0; i < dimensao.c; i++,k++)
     {
-        fraseAux[i] = mat[i][col];
+        fraseAux[k] = mat[coordenada->y0][i];
     }
-    if (strstr(fraseAux, frase) != NULL)
-    {
-        coordenadaDaUltimaLetra(coordenada,tamFrase-1, 0);
-        return true;
-    }
-    else if (strstr(strrev(fraseAux), frase) != NULL)
-    {
-        coordenadaDaUltimaLetra(coordenada,1-tamFrase, 0);
-        return true;
-    }
-    
-    return result;      
-}
-
-bool procuraHorizontal(int lin, char** mat, char* frase, dimensoes dimensao, bool result, coordenadas* coordenada)
-{
-    int tamFrase = strlen(frase);
-    char* fraseAux;
-    fraseAux = alocaVetor(dimensao);
-    strcpy(fraseAux, mat[lin]);
     if (strstr(fraseAux, frase) != NULL)
     {
         coordenadaDaUltimaLetra(coordenada, 0, tamFrase-1);
         return true;
     }
-    else if (strstr(strrev(fraseAux), frase) != NULL)
-    {
-        coordenadaDaUltimaLetra(coordenada, 0, 1-tamFrase);
-        return true;
-    }
     return result;  
 }
 
-int menor(dimensoes dimensao)
-{
-    return dimensao.l < dimensao.c ? dimensao.l : dimensao.c;
-}
-
-bool procuraDiagonalPrincipal(int lin, int col, char** mat, char* frase, dimensoes dimensao, bool result, coordenadas* coordenada)
+bool procuraHorizontalInversa(char** mat, char* frase, dimensoes dimensao, bool result, coordenadas* coordenada)
 {
     int tamFrase = strlen(frase);
     char* fraseAux;
     fraseAux = alocaVetor(dimensao);
-    int m = menor(dimensao);
-    int i;
-    for (i = 0; i < m; i++)
+    for (int i = coordenada->x0, k=0; i >= 0; i--,k++)
     {
-        int k = col - lin + i;
-        if (k >= 0)
-            fraseAux[i] = mat[i][k]; 
+        fraseAux[k] = mat[coordenada->y0][i];
     }
+    if (strstr(fraseAux, frase) != NULL)
+    {
+        coordenadaDaUltimaLetra(coordenada, 0, 1-tamFrase);
+        return true;
+    }
+    return result; 
+}
+
+bool procuraVertical(char** mat, char* frase, dimensoes dimensao, bool result, coordenadas* coordenada)
+{
+    int tamFrase = strlen(frase);
+    char* fraseAux;
+    fraseAux = alocaVetor(dimensao);
+    for (int i = coordenada->y0, k=0; i < dimensao.l; i++, k++)
+    {
+        fraseAux[k] = mat[i][coordenada->x0];
+    }
+    if (strstr(fraseAux, frase) != NULL)
+    {
+        coordenadaDaUltimaLetra(coordenada,tamFrase-1, 0);
+        return true;
+    } 
+    return result;      
+}
+
+bool procuraVerticalInversa(char** mat, char* frase, dimensoes dimensao, bool result, coordenadas* coordenada)
+{
+    int tamFrase = strlen(frase);
+    char* fraseAux;
+    fraseAux = alocaVetor(dimensao);
+    for (int i = coordenada->y0,k=0; i >= 0; i--,k++)
+    {
+        fraseAux[k] = mat[i][coordenada->x0];
+    }
+    if (strstr(fraseAux, frase) != NULL)
+    {
+        coordenadaDaUltimaLetra(coordenada,1-tamFrase, 0);
+        return true;
+    }
+    return result;      
+}
+
+bool procuraDiagonalPrincipal(char** mat, char* frase, dimensoes dimensao, bool result, coordenadas* coordenada)
+{
+    int tamFrase = strlen(frase);
+    char* fraseAux;
+    fraseAux = alocaVetor(dimensao);
+    for (int i = coordenada->y0, j = coordenada->x0, k = 0;i<dimensao.l && j<dimensao.c; i++,j++,k++)
+    {
+        fraseAux[k] = mat[i][j];
+    }
+    
     if (strstr(fraseAux, frase) != NULL )
     {
         coordenadaDaUltimaLetra(coordenada, tamFrase - 1, tamFrase-1);
         return true;
     }
-    else if (strstr(strrev(fraseAux), frase) != NULL)
+    
+    return result;
+}
+
+bool procuraDiagonalPrincipalInversa(char** mat, char* frase, dimensoes dimensao, bool result, coordenadas* coordenada)
+{
+    int tamFrase = strlen(frase);
+    char* fraseAux;
+    fraseAux = alocaVetor(dimensao);
+    for (int i = coordenada->y0, j = coordenada->x0, k = 0;i>=0 && j>=0; i--,j--,k++)
+    {
+        fraseAux[k] = mat[i][j];
+    }
+
+    if (strstr(fraseAux, frase) != NULL)
     {
         coordenadaDaUltimaLetra(coordenada, 1-tamFrase, 1-tamFrase);
+        return true;
+    }
+    
+    return result;
+}
+
+bool procuraDiagonalSecundaria(char** mat, char* frase, dimensoes dimensao, bool result, coordenadas* coordenada)
+{
+    int tamFrase = strlen(frase);
+    char* fraseAux;
+    fraseAux = alocaVetor(dimensao);
+    for (int i = coordenada->y0, j = coordenada->x0, k = 0;i>=0 && j<dimensao.c; i--,j++,k++)
+    {
+        fraseAux[k] = mat[i][j];
+    }
+    
+    if (strstr(fraseAux, frase) != NULL )
+    {
+        coordenadaDaUltimaLetra(coordenada, 1-tamFrase, tamFrase-1);
+        return true;
+    }
+    
+    return result;
+}
+
+bool procuraDiagonalSecundariaInversa(char** mat, char* frase, dimensoes dimensao, bool result, coordenadas* coordenada)
+{
+    int tamFrase = strlen(frase);
+    char* fraseAux;
+    fraseAux = alocaVetor(dimensao);
+    for (int i = coordenada->y0, j = coordenada->x0, k = 0;i<dimensao.l && j>=0; i++,j--,k++)
+    {
+        fraseAux[k] = mat[i][j];
+    }
+    
+    if (strstr(fraseAux, frase) != NULL )
+    {
+        coordenadaDaUltimaLetra(coordenada, tamFrase-1, 1-tamFrase);
         return true;
     }
     
@@ -186,9 +256,14 @@ bool procuraPalavra(char** mat, char* vet, dimensoes dimensao, coordenadas* coor
             {
                 coordenada->y0 = i;
                 coordenada->x0 = j;
-                result = procuraVertical(j, mat, vet, dimensao, result, coordenada);
-                result = procuraHorizontal(i, mat,vet, dimensao, result, coordenada);
-                result = procuraDiagonalPrincipal(i, j, mat, vet, dimensao, result, coordenada);      
+                result = procuraHorizontal(mat,vet, dimensao, result, coordenada);
+                result = procuraHorizontalInversa(mat,vet, dimensao, result, coordenada);
+                result = procuraVertical(mat, vet, dimensao, result, coordenada);
+                result = procuraVerticalInversa(mat, vet, dimensao, result, coordenada);
+                result = procuraDiagonalPrincipal(mat, vet, dimensao, result, coordenada);
+                result = procuraDiagonalPrincipalInversa(mat, vet, dimensao, result, coordenada);
+                result = procuraDiagonalSecundaria(mat, vet, dimensao, result, coordenada);
+                result = procuraDiagonalSecundariaInversa(mat, vet, dimensao, result, coordenada);
                 if (result)
                     return result;          
             }
